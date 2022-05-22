@@ -29,503 +29,587 @@
 					<p>Sébastien Deleuze - MiXiT 2022</p>
 				</section>
 
+
+
+
 				<section>
-					<section>
-						<h2>Définition</h2>
-					</section>
-
-					<section>
-						<p>
-							WebAssembly est un format binaire d'instructions pour machine virtuelle à base de pile.
-						</p>
-					</section>
-
-					<section>
-						<p>
-							Wasm est l'abréviation de WebAssembly.
-						</p>
-					</section>
-
-					<section>
-						<p>
-							Wasm est conçu comme une cible de compilation portable pour les langages de programmation, permettant le déploiement sur le web (mais pas que) pour les applications client et serveur.
-						</p>
-					</section>
+					<h2>Définition</h2>
 				</section>
 
 				<section>
-					<section>
-						<h2>Caractéristiques</h2>
-					</section>
-
-					<section>
-						<h3>Efficacité</h3>
-						<p>Format compact conçu pour être chargé efficacement.</p>
-					</section>
-
-					<section>
-						<h3>Portabilité</h3>
-						<p>Indépendant de l'architecture CPU, du système d'exploitation ou du navigateur cible.</p>
-					</section>
-
-					<section>
-						<h3>Rapidité</h3>
-						<p>Vitesse d'exécution proche de celle du code natif.</p>
-					</section>
-
-					<section>
-						<h3>Sécurité</h3>
-						<p>Modèle d'exécution isolé (sandboxed) avec gestion de la securité basée sur la notion de capacité et gestion de la mémoire sécurisée.</p>
-					</section>
-
-					<section>
-						<h3>Débogable</h3>
-						<p>Le format texte WAT permet de lire, déboguer, optimiser, ou même d'écrire du code WebAssembly à la main.</p>
-					</section>
-
-					<section>
-						<h3>Standard ouvert</h3>
-						<p>Wasm est développé sous l'égide du W3C via une collaboration impliquant de nombreuses entreprises et contributeurs individuels (1415 participants).</p>
-					</section>
-
+					<p>
+						WebAssembly est un format binaire d'instructions pour machine virtuelle à base de pile.
+					</p>
 				</section>
 
 				<section>
+					<p>
+						Wasm est l'abréviation de WebAssembly.
+					</p>
+				</section>
 
-					<section>
-						<h2>Plongée dans le coeur de WebAssembly</h2>
-					</section>
-
-					<section>
-						<div class="r-hstack justify-center">
-							<div><img src="assets/module.jpg" style="height: 800px; margin: 0 auto 4rem auto; background: transparent;"></div>
-							<div>
-								<h3>Exemples d'hôtes</h3>
-								<ul>
-									<li>Un navigateur</li>
-									<li>Un runtime JavaScript</li>
-									<li>Un runtime WebAssembly</li>
-								</ul>
-							</div>
-						</div>
-					</section>
-
-					<section>
-						<h3>Ecrire du WebAssembly au format texte</h3>
-					</section>
-
-					<section>
-						<h2 data-id="code-title">add.wat</h2>
-						<pre data-id="code-animation"><code class="hljs" data-trim data-line-numbers="1|2|3-5|6">
-							(module
-								(func $add (param $a i32) (param $b i32) (result i32)
-									local.get $a
-									local.get $b
-									i32.add)
-								(export "add" (func $add))
-							)
-						</code></pre>
-					</section>
-
-					<section>
-						<h2 data-id="code-title">add.js</h2>
-						<pre data-id="code-animation"><code class="hljs" data-trim data-line-numbers="1|3">
-							WebAssembly.instantiateStreaming(fetch('add.wasm'))
-							.then(obj => {
-								console.log(obj.instance.exports.add(1, 2));  // "3"
-							});
-						</code></pre>
-					</section>
+				<section>
+					<p>
+						Wasm est conçu comme une cible de compilation portable pour les langages de programmation, permettant le déploiement sur le web (mais pas que) pour les applications client et serveur.
+					</p>
+				</section>
 				
-					<section>
-						<h3>Plus loin avec WAT and Canvas</h3>
-						<p><small>Basé sur <a href="https://github.com/binji/raw-wasm">https://github.com/binji/raw-wasm</a> par Ben Smith</small></p>
-					</section>
-
-					<section>
-						<h2 data-id="code-title">fire.html</h2>
-						<pre data-id="code-animation"><code class="hljs" data-trim data-line-numbers>
-							&lt;!DOCTYPE html&gt;
-							&lt;head&gt;
-								&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;fire.css&quot; media=&quot;screen&quot; /&gt;
-								&lt;script type=&quot;text/javascript&quot; src=&quot;fire.js&quot;&gt;&lt;/script&gt;
-							&lt;/head&gt;
-							&lt;body&gt;
-								&lt;canvas width=&quot;320&quot; height=&quot;168&quot;&gt;&lt;/canvas&gt;
-							&lt;/body&gt;		
-						</code></pre>
-					</section>
-
-					<section>
-						<h2 data-id="code-title">fire.js</h2>
-						<pre data-id="code-animation"><code class="hljs" data-trim data-line-numbers="2|4|9-15">
-							let imports = { '': { rand: Math.random } };
-							WebAssembly.instantiateStreaming(fetch('fire.wasm'), imports)
-								.then(results => {
-									let canvasData = new Uint8Array(results.instance.exports.mem.buffer, 53760, 215040);
-									let canvas = document.querySelector('canvas');
-									let context = canvas.getContext('2d');
-									let imageData = context.createImageData(320, 168);
-
-									let update = function () {
-										requestAnimationFrame(update);
-										results.instance.exports.run();
-										imageData.data.set(canvasData);
-										context.putImageData(imageData, 0, 0);
-									};
-									update();
-								});
-						</code></pre>
-					</section>
-
-					<section>
-						<h2 data-id="code-title">fire.wat</h2>
-						<pre data-id="code-animation"><code class="hljs" data-trim data-line-numbers="6|12|15-22|24-107|107">
-							;; FIRE_WIDTH = 320
-							;; FIRE_HEIGHT = 168
-							;; FIRE_WIDTH * FIRE_HEIGHT = 53760
-							;; FIRE_WIDTH * (FIRE_HEIGHT - 1) = 53440
-
-							(import "" "rand" (func $random (result f64)))
-
-							;; 5 pages * 64KiB bytes per page:
-							;; [0, 53760)       => firePixels, 1 byte per pixel.
-							;; [53760, 268800)  => canvasData, 4 bytes per pixel.
-							;; [268800, 268948) => Palette data, RGBA.
-							(memory (export "mem") 5)
-
-							;; Palette data.
-							(data (i32.const 268800)
-							"\07\07\07\FF\1F\07\07\FF\2F\0F\07\FF\47\0F\07\FF\57\17\07\FF\67\1F\07\FF"
-							"\77\1F\07\FF\8F\27\07\FF\9F\2F\07\FF\AF\3F\07\FF\BF\47\07\FF\C7\47\07\FF"
-							"\DF\4F\07\FF\DF\57\07\FF\DF\57\07\FF\D7\5F\07\FF\D7\5F\07\FF\D7\67\0F\FF"
-							"\CF\6F\0F\FF\CF\77\0F\FF\CF\7F\0F\FF\CF\87\17\FF\C7\87\17\FF\C7\8F\17\FF"
-							"\C7\97\1F\FF\BF\9F\1F\FF\BF\9F\1F\FF\BF\A7\27\FF\BF\A7\27\FF\BF\AF\2F\FF"
-							"\B7\AF\2F\FF\B7\B7\2F\FF\B7\B7\37\FF\CF\CF\6F\FF\DF\DF\9F\FF\EF\EF\C7\FF"
-							"\FF\FF\FF\FF")
-
-							(func $setup
-							(local $i i32)
-
-							;; Fill bottom row with color 36, (R=0xff, G=0xff, B=0xff).
-							(local.set $i (i32.const 320))
-							(loop
-								;; memory[53440 - 1 + i] = 36
-								(i32.store8 offset=53439 (local.get $i) (i32.const 36))
-								;; loop if --i != 0
-								(br_if 0
-								(local.tee $i (i32.sub (local.get $i) (i32.const 1))))))
-
-							;; Run setup at start.
-							(start $setup)
-
-							(func (export "run")
-							(local $i i32)
-							(local $pixel i32)
-							(local $randIdx i32)
-
-							;; Update the fire.
-							(loop $xloop
-								(loop $yloop
-								(if
-									;; if (pixel = memory[i += 320]) != 0
-									(local.tee $pixel
-									(i32.load8_u
-										(local.tee $i
-										(i32.add (local.get $i) (i32.const 320)))))
-									(then
-									;; randIdx = round(random() * 3.0) & 3
-									(local.set $randIdx
-										(i32.and
-										(i32.trunc_f64_u
-											(f64.nearest
-											(f64.mul
-												(call $random)
-												(f64.const 3))))
-										(i32.const 3)))
-
-									;; memory[i - randIdx - 319] = pixel - (randIdx & 1)
-									(i32.store8
-										(i32.sub
-										(i32.sub
-											(local.get $i)
-											(local.get $randIdx))
-										(i32.const 319))
-										(i32.sub
-										(local.get $pixel)
-										(i32.and
-											(local.get $randIdx)
-											(i32.const 1)))))
-									(else
-									;; memory[i - 320] = 0
-									(i32.store8
-										(i32.sub (local.get $i) (i32.const 320))
-										(i32.const 0))))
-
-								;; loop if i < 53760 - 320
-								(br_if $yloop
-									(i32.lt_u (local.get $i) (i32.const 53440))))
-
-								;; i -= 53760 - 320 - 1, loop if i != 320
-								(br_if $xloop
-								(i32.ne
-									(local.tee $i (i32.sub (local.get $i) (i32.const 53439)))
-									(i32.const 320))))
-
-							;; copy from firePixels to canvasData, using palette data.
-							(local.set $i (i32.const 53760))
-							(loop
-								;; --i
-								(local.set $i (i32.sub (local.get $i) (i32.const 1)))
-
-								;; memory[53760 + (i << 2)] = memory[268800 + (memory[i] << 2)]
-								(i32.store offset=53760
-								(i32.shl (local.get $i) (i32.const 2))
-								(i32.load offset=268800
-									(i32.shl
-									(i32.load8_u (local.get $i))
-									(i32.const 2))))
-
-								;; loop if i != 0
-								(br_if 0 (local.get $i))))
-
-						</code></pre>
-					</section>
-
-					<section data-background-color="white" 	data-background-iframe="assets/doomfire/index.html" data-background-interactive></section>
-
-					<section><img src="assets/art-of-webassembly.png"/></section>
-					
+				
+				<section>
+					<h2>Caractéristiques</h2>
 				</section>
 
 				<section>
-					<section>
-						<h2>Développer pour WebAssembly</h2>
-					</section>
+					<h3>Efficacité</h3>
+					<p>Format compact conçu pour être chargé efficacement.</p>
+				</section>
 
-					<section>
-						<h2>WebAssembly évolue</h2>
-					</section>
+				<section>
+					<h3>Portabilité</h3>
+					<p>Indépendant de l'architecture CPU, du système d'exploitation ou du navigateur cible.</p>
+				</section>
 
-					<section data-background-image="/assets/webassembly-map.png">
-						<p>&nbsp;</p>
-						<p>&nbsp;</p>
-						<p>&nbsp;</p>
-						<p>&nbsp;</p>
-						<p>&nbsp;</p>
-						<p>&nbsp;</p>
-						<p>&nbsp;</p>
-						<p>&nbsp;</p>
-						<p>&nbsp;</p>
-						<p style="color: black;"><small>Attribution : <a href="https://hacks.mozilla.org/2018/10/webassemblys-post-mvp-future/">Lin Clark</a></small></p>
-					</section>
+				<section>
+					<h3>Rapidité</h3>
+					<p>Vitesse d'exécution proche de celle du code natif.</p>
+				</section>
 
-					<section>
-						<h3>Quels langages utiliser ?</h3>
-					</section>
+				<section>
+					<h3>Sécurité</h3>
+					<p>Modèle d'exécution isolé (sandboxed) avec gestion de la securité basée sur la notion de capacité et gestion de la mémoire sécurisée.</p>
+				</section>
 
-					<section>
-						<h3>Langages existant qui compilent vers WebAssembly</h3>
-						<p>
-							<img src="/assets/C++_Logo.svg.png" style="height: 180px;" />
-							&nbsp;&nbsp;
-							<img src="/assets/rust.png" style="height: 180px;" />
-							&nbsp;&nbsp;
-							<img src="/assets/go.png" style="height: 180px;" />
-							&nbsp;&nbsp;
-							<img src="/assets/tinygo-logo.png" style="height: 180px;" />
-						</p>
-						<p>
-							<img src="/assets/kotlin-logo-color.svg" style="height: 180px;" />
-							&nbsp;&nbsp;
-							<img src="/assets/swift.png" style="height: 180px;" />
-							&nbsp;&nbsp;
-							<img src="/assets/logo-dot-net.jpg" style="height: 180px;" />
-							&nbsp;&nbsp;
-							<img src="/assets/zig.png" style="height: 180px;" />
-						</p>
-					</section>
+				<section>
+					<h3>Débogable</h3>
+					<p>Le format texte WAT permet de lire, déboguer, optimiser, ou même d'écrire du code WebAssembly à la main.</p>
+				</section>
 
-					<section>
-						<h3>Langages existant qui devraient compiler vers WebAssembly</h3>
-						<p>
-							<img src="/assets/java.png" style="height: 360px;" />
-							&nbsp;&nbsp;
-							<img src="/assets/dart.png" style="height: 360px;" />
-						</p>
-					</section>
+				<section>
+					<h3>Standard ouvert</h3>
+					<p>Wasm est développé sous l'égide du W3C via une collaboration impliquant de nombreuses entreprises et contributeurs individuels (1415 participants).</p>
+				</section>
 
-					<section>
-						<h3>Langages créés pour WebAssembly</h3>
-						<p>
-							<img src="/assets/AssemblyScript_logo_2020.svg.png" style="height: 200px;" />
-							&nbsp;&nbsp;
-							<img src="/assets/grain_shorthand_color.png" style="height: 200px;" />
-						</p>
-					</section>
+				
 
-					<section>
-						<h3>Limitations</h3>
-						<ul>
-							<li>Interopérabilité sur les types non numériques</li>
-							<li>Fonctionnalités en incubation (GC)</li>
-							<li>Différence entres hôtes Web et non Web</li>
-						</ul>
-					</section>
 
-					<section>
-						<a href="https://github.com/sdeleuze/wasm-playground" target="_blank">https://github.com/vmware-wasmstack/wasm-languages</a>
-					</section>
+				
 
-					<section>
-						<h3>WebAssembly Components</h3>
-						<p><a href="https://github.com/WebAssembly/component-model">https://github.com/WebAssembly/component-model</a></p>
-					</section>
+				<section>
+					<h2>Plongée au coeur de WebAssembly</h2>
+				</section>
 
-					<section data-background-color="white" data-background-iframe="https://bytecodealliance.github.io/wit-bindgen/" data-background-interactive></section>		
-
-					<section>
-						<h3>Débogage</h3>
-						<p>
+				<section>
+					<div class="r-hstack justify-center">
+						<div><img src="assets/module.jpg" style="height: 800px; margin: 0 auto 4rem auto; background: transparent;"></div>
+						<div>
+							<h3>Exemples d'hôtes</h3>
 							<ul>
-								<li>DWARF plutôt que Source Maps</li>
-								<li>Dans le navigateur (extension Chrome) ou côté serveur (Wasmtime)</li>
-								<li>Support non finalisé :  pas encore utilisable</li>
+								<li>Un navigateur</li>
+								<li>Un runtime JavaScript</li>
+								<li>Un runtime WebAssembly</li>
 							</ul>
-						</p>
-					</section>
+						</div>
+					</div>
+				</section>
 
-					<section data-background-color="white" data-background-iframe="/assets/browser-hello-world/" data-background-interactive></section>		
+				<section>
+					<h3>Ecrire du WebAssembly au format texte</h3>
+				</section>
+
+				<section>
+					<h2 data-id="code-title">add.wat</h2>
+					<pre data-id="code-animation"><code class="hljs" data-trim data-line-numbers="1|2|3-5|6">
+						(module
+							(func $add (param $a i32) (param $b i32) (result i32)
+								local.get $a
+								local.get $b
+								i32.add)
+							(export "add" (func $add))
+						)
+					</code></pre>
+				</section>
+
+				<section>
+					<h2 data-id="code-title">add.js</h2>
+					<pre data-id="code-animation"><code class="hljs" data-trim data-line-numbers="1|3">
+						WebAssembly.instantiateStreaming(fetch('add.wasm'))
+						.then(obj => {
+							console.log(obj.instance.exports.add(1, 2));  // "3"
+						});
+					</code></pre>
+				</section>
+			
+				<section>
+					<h3>Plus loin avec WAT and Canvas</h3>
+					<p><small>Basé sur <a href="https://github.com/binji/raw-wasm">https://github.com/binji/raw-wasm</a> par Ben Smith</small></p>
+				</section>
+
+				<section>
+					<h2 data-id="code-title">fire.html</h2>
+					<pre data-id="code-animation"><code class="hljs" data-trim data-line-numbers>
+						&lt;!DOCTYPE html&gt;
+						&lt;head&gt;
+							&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;fire.css&quot; media=&quot;screen&quot; /&gt;
+							&lt;script type=&quot;text/javascript&quot; src=&quot;fire.js&quot;&gt;&lt;/script&gt;
+						&lt;/head&gt;
+						&lt;body&gt;
+							&lt;canvas width=&quot;320&quot; height=&quot;168&quot;&gt;&lt;/canvas&gt;
+						&lt;/body&gt;		
+					</code></pre>
+				</section>
+
+				<section>
+					<h2 data-id="code-title">fire.js</h2>
+					<pre data-id="code-animation"><code class="hljs" data-trim data-line-numbers="2|4|9-15">
+						let imports = { '': { rand: Math.random } };
+						WebAssembly.instantiateStreaming(fetch('fire.wasm'), imports)
+							.then(results => {
+								let canvasData = new Uint8Array(results.instance.exports.mem.buffer, 53760, 215040);
+								let canvas = document.querySelector('canvas');
+								let context = canvas.getContext('2d');
+								let imageData = context.createImageData(320, 168);
+
+								let update = function () {
+									requestAnimationFrame(update);
+									results.instance.exports.run();
+									imageData.data.set(canvasData);
+									context.putImageData(imageData, 0, 0);
+								};
+								update();
+							});
+					</code></pre>
+				</section>
+
+				<section>
+					<h2 data-id="code-title">fire.wat</h2>
+					<pre data-id="code-animation"><code class="hljs" data-trim data-line-numbers="6|12|15-22|24-107|107">
+						;; FIRE_WIDTH = 320
+						;; FIRE_HEIGHT = 168
+						;; FIRE_WIDTH * FIRE_HEIGHT = 53760
+						;; FIRE_WIDTH * (FIRE_HEIGHT - 1) = 53440
+
+						(import "" "rand" (func $random (result f64)))
+
+						;; 5 pages * 64KiB bytes per page:
+						;; [0, 53760)       => firePixels, 1 byte per pixel.
+						;; [53760, 268800)  => canvasData, 4 bytes per pixel.
+						;; [268800, 268948) => Palette data, RGBA.
+						(memory (export "mem") 5)
+
+						;; Palette data.
+						(data (i32.const 268800)
+						"\07\07\07\FF\1F\07\07\FF\2F\0F\07\FF\47\0F\07\FF\57\17\07\FF\67\1F\07\FF"
+						"\77\1F\07\FF\8F\27\07\FF\9F\2F\07\FF\AF\3F\07\FF\BF\47\07\FF\C7\47\07\FF"
+						"\DF\4F\07\FF\DF\57\07\FF\DF\57\07\FF\D7\5F\07\FF\D7\5F\07\FF\D7\67\0F\FF"
+						"\CF\6F\0F\FF\CF\77\0F\FF\CF\7F\0F\FF\CF\87\17\FF\C7\87\17\FF\C7\8F\17\FF"
+						"\C7\97\1F\FF\BF\9F\1F\FF\BF\9F\1F\FF\BF\A7\27\FF\BF\A7\27\FF\BF\AF\2F\FF"
+						"\B7\AF\2F\FF\B7\B7\2F\FF\B7\B7\37\FF\CF\CF\6F\FF\DF\DF\9F\FF\EF\EF\C7\FF"
+						"\FF\FF\FF\FF")
+
+						(func $setup
+						(local $i i32)
+
+						;; Fill bottom row with color 36, (R=0xff, G=0xff, B=0xff).
+						(local.set $i (i32.const 320))
+						(loop
+							;; memory[53440 - 1 + i] = 36
+							(i32.store8 offset=53439 (local.get $i) (i32.const 36))
+							;; loop if --i != 0
+							(br_if 0
+							(local.tee $i (i32.sub (local.get $i) (i32.const 1))))))
+
+						;; Run setup at start.
+						(start $setup)
+
+						(func (export "run")
+						(local $i i32)
+						(local $pixel i32)
+						(local $randIdx i32)
+
+						;; Update the fire.
+						(loop $xloop
+							(loop $yloop
+							(if
+								;; if (pixel = memory[i += 320]) != 0
+								(local.tee $pixel
+								(i32.load8_u
+									(local.tee $i
+									(i32.add (local.get $i) (i32.const 320)))))
+								(then
+								;; randIdx = round(random() * 3.0) & 3
+								(local.set $randIdx
+									(i32.and
+									(i32.trunc_f64_u
+										(f64.nearest
+										(f64.mul
+											(call $random)
+											(f64.const 3))))
+									(i32.const 3)))
+
+								;; memory[i - randIdx - 319] = pixel - (randIdx & 1)
+								(i32.store8
+									(i32.sub
+									(i32.sub
+										(local.get $i)
+										(local.get $randIdx))
+									(i32.const 319))
+									(i32.sub
+									(local.get $pixel)
+									(i32.and
+										(local.get $randIdx)
+										(i32.const 1)))))
+								(else
+								;; memory[i - 320] = 0
+								(i32.store8
+									(i32.sub (local.get $i) (i32.const 320))
+									(i32.const 0))))
+
+							;; loop if i < 53760 - 320
+							(br_if $yloop
+								(i32.lt_u (local.get $i) (i32.const 53440))))
+
+							;; i -= 53760 - 320 - 1, loop if i != 320
+							(br_if $xloop
+							(i32.ne
+								(local.tee $i (i32.sub (local.get $i) (i32.const 53439)))
+								(i32.const 320))))
+
+						;; copy from firePixels to canvasData, using palette data.
+						(local.set $i (i32.const 53760))
+						(loop
+							;; --i
+							(local.set $i (i32.sub (local.get $i) (i32.const 1)))
+
+							;; memory[53760 + (i << 2)] = memory[268800 + (memory[i] << 2)]
+							(i32.store offset=53760
+							(i32.shl (local.get $i) (i32.const 2))
+							(i32.load offset=268800
+								(i32.shl
+								(i32.load8_u (local.get $i))
+								(i32.const 2))))
+
+							;; loop if i != 0
+							(br_if 0 (local.get $i))))
+
+					</code></pre>
+				</section>
+
+				<section data-background-color="white" 	data-background-iframe="assets/doomfire/index.html" data-background-interactive></section>
+
+				<section><img src="assets/art-of-webassembly.png"/></section>
+				
+			
+
+			
+
+
+
+				<section>
+					<h2>Développer pour WebAssembly</h2>
+				</section>
+
+				<section>
+					<h3>Langages existant qui compilent vers WebAssembly</h3>
+					<p>
+						<img src="/assets/C++_Logo.svg.png" style="height: 180px;" />
+						&nbsp;&nbsp;
+						<img src="/assets/rust.png" style="height: 180px;" />
+						&nbsp;&nbsp;
+						<img src="/assets/go.png" style="height: 180px;" />
+						&nbsp;&nbsp;
+						<img src="/assets/tinygo-logo.png" style="height: 180px;" />
+					</p>
+					<p>
+						<img src="/assets/kotlin-logo-color.svg" style="height: 180px;" />
+						&nbsp;&nbsp;
+						<img src="/assets/swift.png" style="height: 180px;" />
+						&nbsp;&nbsp;
+						<img src="/assets/logo-dot-net.jpg" style="height: 180px;" />
+						&nbsp;&nbsp;
+						<img src="/assets/zig.png" style="height: 180px;" />
+					</p>
+				</section>
+
+				<section>
+					<h3>Testez chaque langage avec WebAssembly dans votre navigateur</h3>
+					<a href="https://github.com/sdeleuze/wasm-playground" target="_blank">https://github.com/vmware-wasmstack/wasm-languages</a>
+				</section>
+
+				<section>
+					<h3>Developper une application WebAssembly avec Rust ou Kotlin/Wasm</h3>
+					<a href="https://sdeleuze-wasmplayground-dh347egy90p.ws-eu45.gitpod.io/" target="_blank">Demo</a>
+				</section>
+
+				<section>
+					<h3>Langages existant qui devraient compiler vers WebAssembly</h3>
+					<p>
+						<img src="/assets/java.png" style="height: 360px;" />
+						&nbsp;&nbsp;
+						<img src="/assets/dart.png" style="height: 360px;" />
+					</p>
+				</section>
+
+				<section>
+					<h3>Langages de script dont l'interpréteur compile vers WebAssembly</h3>
+					<p>
+						<img src="assets/python-logo.png" style="height: 200px;" />
+						&nbsp;&nbsp;
+						<img src="assets/ruby-logo.png" style="height: 200px;" />
+					</p>
+				</section>
+
+				<section>
+					<h3>Python dans le navigateur avec PyScript</h3>
+					<pre data-id="code-animation"><code class="hljs" data-trim data-line-numbers="4|5-10|16-25">
+						&lt;html&gt;
+							&lt;head&gt;
+								&lt;link rel=&quot;stylesheet&quot; href=&quot;https://pyscript.net/alpha/pyscript.css&quot; /&gt;
+								&lt;script defer src=&quot;https://pyscript.net/alpha/pyscript.js&quot;&gt;&lt;/script&gt;
+								&lt;py-env&gt;
+									- numpy
+									- matplotlib
+									- paths:
+									- data.py
+								&lt;/py-env&gt;
+							&lt;/head&gt;
+
+							&lt;body&gt;
+								&lt;h1&gt;Let's plot random numbers&lt;/h1&gt;
+								&lt;div id=&quot;plot&quot;&gt;&lt;/div&gt;
+								&lt;py-script output=&quot;plot&quot;&gt;
+					import matplotlib.pyplot as plt
+					from data import make_x_and_y
+
+					x, y = make_x_and_y(n=1000)
+
+					fig, ax = plt.subplots()
+					ax.scatter(x, y)
+					fig
+								&lt;/py-script&gt;
+							&lt;/body&gt;
+						&lt;/html&gt;
+					</code>
 					
 				</section>
 
+				<section data-background-color="white" 	data-background-iframe="assets/python-browser-visualization/index.html" data-background-interactive></section>
+
 				<section>
-					<section>
-						<h2>WASI</h2>
-						<p>WebAssembly System Interface</p>
-					</section>
+					<h3>Langages créés pour WebAssembly</h3>
+					<p>
+						<img src="/assets/AssemblyScript_logo_2020.svg.png" style="height: 200px;" />
+						&nbsp;&nbsp;
+						<img src="/assets/grain_shorthand_color.png" style="height: 200px;" />
+					</p>
+				</section>
+
+				<section>
+					<h2>WebAssembly évolue</h2>
+				</section>
+
+				<section data-background-image="/assets/webassembly-map.png" data-transition="none">
+					<p>&nbsp;</p>
+					<p>&nbsp;</p>
+					<p>&nbsp;</p>
+					<p>&nbsp;</p>
+					<p>&nbsp;</p>
+					<p>&nbsp;</p>
+					<p>&nbsp;</p>
+					<p>&nbsp;</p>
+					<p>&nbsp;</p>
+					<p style="color: black;"><small>Attribution : <a href="https://hacks.mozilla.org/2018/10/webassemblys-post-mvp-future/">Lin Clark</a></small></p>
+				</section>
+
+				<section>
+					<h3>Limitations</h3>
+					<ul>
+						<li>Interopérabilité sur les types non numériques</li>
+						<li>Fonctionnalités en incubation (GC)</li>
+						<li>Différence entres hôtes Web et non Web</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>WebAssembly Components</h3>
+					<p><a href="https://github.com/WebAssembly/component-model" target="_blank">https://github.com/WebAssembly/component-model</a></p>
+				</section>
+
+				<section data-background-color="white" data-background-iframe="https://bytecodealliance.github.io/wit-bindgen/" data-background-interactive></section>
+
+				<section>
+					<h3>Débogage</h3>
+					<p>
+						<ul>
+							<li>DWARF plutôt que Source Maps</li>
+							<li>Support non finalisé : pas encore utilisable</li>
+						</ul>
+					</p>
+				</section>
+						
 					
-					<section>
-						<h3>Portabilité</h3>
-						<img src="/assets/wasi-portability.png" />
-						<p><small>Attribution : <a href="https://hacks.mozilla.org/2019/03/standardizing-wasi-a-webassembly-system-interface/">Lin Clark</a></small></p>
-					</section>
+					
 
-					<section>
-						<h3>Sécurité</h3>
-						<img src="/assets/wasi-security.png" />
-						<p><small>Attribution : <a href="https://hacks.mozilla.org/2019/03/standardizing-wasi-a-webassembly-system-interface/">Lin Clark</a></small></p>
-					</section>
 
-					<section>
-						<h3>Developper une application WASI avec Rust</h3>
-						<a href="https://github.com/sdeleuze/wasm-playground/tree/main/rust/wasi-markdown-renderer" target="_blank">Demo</a>
-					</section>
 
-					<section style="font-size: 0.8em;">
-						<h3>WASI est encore jeune</h3>
-						<table>
-							<thead>
-								<tr>
-									<th>Proposition</th>
-									<th>Champion</th>
-									<th>Phase (0-5)</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td><a href="https://github.com/WebAssembly/wasi-io">I/O</a></td>
-									<td>Dan Gohman</td>
-									<td>2</td>
-								</tr>
-								<tr>
-									<td><a href="https://github.com/WebAssembly/wasi-filesystem">Filesystem</a></td>
-									<td>Dan Gohman</td>
-									<td>2</td>
-								</tr>
-								<tr>
-									<td><a href="https://github.com/WebAssembly/wasi-nn">Machine learning</a></td>
-									<td>Andrew Brown, Mingqiu Sun</td>
-									<td>2</td>
-								</tr>
-								<tr>
-									<td><a href="https://github.com/WebAssembly/wasi-http">HTTP</a></td>
-									<td>Piotr Sikora</td>
-									<td>1</td>
-								</tr>
-								<tr>
-									<td><a href="https://github.com/WebAssembly/wasi-native-threads">Native threads</a></td>
-									<td>Alexandru Ene</td>
-									<td>1</td>
-								</tr>
-								<tr>
-									<td><a href="https://github.com/WebAssembly/wasi-parallel">Parallel</a></td>
-									<td>Andrew Brown</td>
-									<td>1</td>
-								</tr>
-								<tr>
-									<td><a href="https://github.com/WebAssembly/wasi-sockets">Sockets</a></td>
-									<td>Dave Bakker</td>
-									<td>1</td>
-								</tr>								
-							</tbody>
-						</table>
-					</section>
-
-					<section>
-						<h3>Un serveur HTTP pur WASI!</h3>
-						<a href="https://github.com/sdeleuze/mini_http" target="_blank">Demo</a>
-					</section>
-
+				<section>
+					<h2>WASI</h2>
+					<p>WebAssembly System Interface</p>
+				</section>
+				
+				<section>
+					<h3>Portabilité</h3>
+					<img src="/assets/wasi-portability.png" />
+					<p><small>Attribution : <a href="https://hacks.mozilla.org/2019/03/standardizing-wasi-a-webassembly-system-interface/">Lin Clark</a></small></p>
 				</section>
 
 				<section>
-
-					<section>
-						<h2>Cas d'utilisation</h2>
-					</section>
-
-					<section>
-						<h3>Porter du code natif sur le Web</h3>
-						<img src="assets/Emscripten.png" />
-						<a href="https://web.autocad.com/" target="_blank">Demo</a>
-					</section>
-
-					<section>
-						<h3>Système d'exploitation</h3>
-					</section>
-
-					<section data-background-iframe="https://dustinbrett.com/" data-background-interactive></section>					
-
-					<section>
-						<h3>Edge computing</h3>
-						<p>Le code s'exécute au plus proche de l'utilisateur : latence, vie privée.</p>
-					</section>
-
-					<section>
-						<h3>Changer l'experience de développement</h3>
-						<a href="https://stackblitz.com/" target="_blank">StackBlitz</a>
-					</section>
-
-					<section>
-						<h3>Programation multi-langages</h3>
-						<img src="/assets/multi-languages.png" />
-						<p><small>Attribution : <a href="https://bytecodealliance.org/articles/announcing-the-bytecode-alliance">Lin Clark</a></small></p>
-					</section>
-
-					<section>
-						<h3>Réduire les silos technologiques</h3>
-						<p>Même langage pour client et serveur par exemple.</p>
-					</section>
-
-					<section>
-						<h3>Déploiement sans container</h3>
-					</section>
-
+					<h3>Sécurité</h3>
+					<img src="/assets/wasi-security.png" />
+					<p><small>Attribution : <a href="https://hacks.mozilla.org/2019/03/standardizing-wasi-a-webassembly-system-interface/">Lin Clark</a></small></p>
 				</section>
 
 				<section>
-					<h2>Meetup WebAssembly à Lyon le 16 juin au Puzzle Inn à partir de 19h</h2>
+					<h3>Nécessite un runtime WASI comme Wasmtime.</h3>
+				</section>
+
+				<section>
+					<h3>Developper une application WASI avec Rust</h3>
+					<a href="https://sdeleuze-wasmplayground-dh347egy90p.ws-eu45.gitpod.io/" target="_blank">Demo</a>
+				</section>
+
+				<section style="font-size: 0.8em;">
+					<h3>WASI est encore jeune</h3>
+					<table>
+						<thead>
+							<tr>
+								<th>Proposition</th>
+								<th>Champion</th>
+								<th>Phase (0-5)</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><a href="https://github.com/WebAssembly/wasi-io">I/O</a></td>
+								<td>Dan Gohman</td>
+								<td>2</td>
+							</tr>
+							<tr>
+								<td><a href="https://github.com/WebAssembly/wasi-filesystem">Filesystem</a></td>
+								<td>Dan Gohman</td>
+								<td>2</td>
+							</tr>
+							<tr>
+								<td><a href="https://github.com/WebAssembly/wasi-nn">Machine learning</a></td>
+								<td>Andrew Brown, Mingqiu Sun</td>
+								<td>2</td>
+							</tr>
+							<tr>
+								<td><a href="https://github.com/WebAssembly/wasi-http">HTTP</a></td>
+								<td>Piotr Sikora</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td><a href="https://github.com/WebAssembly/wasi-native-threads">Native threads</a></td>
+								<td>Alexandru Ene</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td><a href="https://github.com/WebAssembly/wasi-parallel">Parallel</a></td>
+								<td>Andrew Brown</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td><a href="https://github.com/WebAssembly/wasi-sockets">Sockets</a></td>
+								<td>Dave Bakker</td>
+								<td>1</td>
+							</tr>								
+						</tbody>
+					</table>
+				</section>
+
+				<section>
+					<h3>Un serveur HTTP pur WASI!</h3>
+					<a href="https://sdeleuze-minihttp-obhb9shvm29.ws-eu45.gitpod.io/" target="_blank">Demo</a>
+				</section>
+
+				
+
+				
+
+				<section>
+					<h2>Cas d'utilisation</h2>
+				</section>
+
+				<section>
+					<h3>Porter du code natif sur le Web</h3>
+					<img src="assets/Emscripten.png" />
+					<p><a href="https://web.autocad.com/" target="_blank">AutoCad</a></p>						
+				</section>
+
+				<section>
+					<h3>Système d'exploitation</h3>
+				</section>
+
+				<section data-background-iframe="https://dustinbrett.com/" data-background-interactive></section>					
+
+				<section>
+					<h3>Edge computing</h3>
+					<p>Le code s'exécute au plus proche de l'utilisateur : faible latence, vie privée, moins de Cloud.</p>
+				</section>
+
+				<section data-background-color="white" data-background-iframe="https://fiddle.fastlydemo.net/" data-background-interactive></section>
+
+				<section>
+					<h3>UDF (User Defined Function) / Plugins</h3>
+					<p>Flight Simulator, Envoy ...</p>
+				</section>
+
+
+				<section>
+					<h3>Changer l'experience de développement, vrai server-less.</h3>
+					<a href="https://stackblitz.com/" target="_blank">StackBlitz</a>
+				</section>
+
+				<section>
+					<h3>Programation multi-langages</h3>
+					<img src="/assets/multi-languages.png" />
+					<p><small>Attribution : <a href="https://bytecodealliance.org/articles/announcing-the-bytecode-alliance">Lin Clark</a></small></p>
+				</section>
+
+				<section>
+					<h3>Plateformes WebAssembly</h3>
+					<p>
+						<img src="assets/wasmcloud.png" style="height: 160px;" />
+						&nbsp;&nbsp;
+						<img src="assets/suborbital.png" style="height: 160px;" />
+					</p>
+					<p>
+						<img src="assets/fermyon.png" style="height: 160px;" />
+						&nbsp;&nbsp;
+						<img src="assets/lunatic.png" style="height: 160px;" />
+					</p>
+				</section>
+
+				<section>
+					<h3>Réduire les silos technologiques</h3>
+					<p>Même langage pour client et serveur par exemple.</p>
+				</section>
+
+				<section>
+					<h3>Déploiement sans container</h3>
+					<p>Cible de déploiement unverversel, beaucoup plus efficace et sécurisé.</p>
+				</section>
+
+
+				
+
+
+
+
+				<section>
+					<h2>Conclusion</h2>
+					<p><a href="https://twitter.com/sdeleuze">@sdeleuze</a> sur Twitter</p>
+					<p>Meetup WebAssembly à Lyon le 16 juin au Puzzle Inn à partir de 19h</p>
 				</section>
 				
 			</div>
@@ -541,6 +625,7 @@
 			// - https://revealjs.com/config/
 			Reveal.initialize({
 				hash: true,
+				slideNumber: true,
 
 				// Learn about plugins: https://revealjs.com/plugins/
 				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
