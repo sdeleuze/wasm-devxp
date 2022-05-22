@@ -100,7 +100,7 @@
 						<div class="r-hstack justify-center">
 							<div><img src="assets/module.jpg" style="height: 800px; margin: 0 auto 4rem auto; background: transparent;"></div>
 							<div>
-								<h3>Examples d'hôtes</h3>
+								<h3>Exemples d'hôtes</h3>
 								<ul>
 									<li>Un navigateur</li>
 									<li>Un runtime JavaScript</li>
@@ -300,17 +300,103 @@
 
 				<section>
 					<section>
-						<h3>Porter du code natif sur le Web avec</h3>
-						<img src="assets/Emscripten.png" />
+						<h2>Développer pour WebAssembly</h2>
 					</section>
 
 					<section>
-						<h3>Autocad sur le Web?</h3>
-						<a href="https://web.autocad.com/" target="_blank">Demo</a>
+						<h2>WebAssembly évolue</h2>
 					</section>
 
-					<section data-background-iframe="https://dustinbrett.com/" data-background-interactive></section>					
+					<section data-background-image="/assets/webassembly-map.png">
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+						<p>&nbsp;</p>
+						<p style="color: black;"><small>Attribution : <a href="https://hacks.mozilla.org/2018/10/webassemblys-post-mvp-future/">Lin Clark</a></small></p>
+					</section>
 
+					<section>
+						<h3>Quels langages utiliser ?</h3>
+					</section>
+
+					<section>
+						<h3>Langages existant qui compilent vers WebAssembly</h3>
+						<p>
+							<img src="/assets/C++_Logo.svg.png" style="height: 180px;" />
+							&nbsp;&nbsp;
+							<img src="/assets/rust.png" style="height: 180px;" />
+							&nbsp;&nbsp;
+							<img src="/assets/go.png" style="height: 180px;" />
+							&nbsp;&nbsp;
+							<img src="/assets/tinygo-logo.png" style="height: 180px;" />
+						</p>
+						<p>
+							<img src="/assets/kotlin-logo-color.svg" style="height: 180px;" />
+							&nbsp;&nbsp;
+							<img src="/assets/swift.png" style="height: 180px;" />
+							&nbsp;&nbsp;
+							<img src="/assets/logo-dot-net.jpg" style="height: 180px;" />
+							&nbsp;&nbsp;
+							<img src="/assets/zig.png" style="height: 180px;" />
+						</p>
+					</section>
+
+					<section>
+						<h3>Langages existant qui devraient compiler vers WebAssembly</h3>
+						<p>
+							<img src="/assets/java.png" style="height: 360px;" />
+							&nbsp;&nbsp;
+							<img src="/assets/dart.png" style="height: 360px;" />
+						</p>
+					</section>
+
+					<section>
+						<h3>Langages créés pour WebAssembly</h3>
+						<p>
+							<img src="/assets/AssemblyScript_logo_2020.svg.png" style="height: 200px;" />
+							&nbsp;&nbsp;
+							<img src="/assets/grain_shorthand_color.png" style="height: 200px;" />
+						</p>
+					</section>
+
+					<section>
+						<h3>Limitations</h3>
+						<ul>
+							<li>Interopérabilité sur les types non numériques</li>
+							<li>Fonctionnalités en incubation (GC)</li>
+							<li>Différence entres hôtes Web et non Web</li>
+						</ul>
+					</section>
+
+					<section>
+						<a href="https://github.com/sdeleuze/wasm-playground" target="_blank">https://github.com/vmware-wasmstack/wasm-languages</a>
+					</section>
+
+					<section>
+						<h3>WebAssembly Components</h3>
+						<p><a href="https://github.com/WebAssembly/component-model">https://github.com/WebAssembly/component-model</a></p>
+					</section>
+
+					<section data-background-color="white" data-background-iframe="https://bytecodealliance.github.io/wit-bindgen/" data-background-interactive></section>		
+
+					<section>
+						<h3>Débogage</h3>
+						<p>
+							<ul>
+								<li>DWARF plutôt que Source Maps</li>
+								<li>Dans le navigateur (extension Chrome) ou côté serveur (Wasmtime)</li>
+								<li>Support non finalisé :  pas encore utilisable</li>
+							</ul>
+						</p>
+					</section>
+
+					<section data-background-color="white" data-background-iframe="/assets/browser-hello-world/" data-background-interactive></section>		
+					
 				</section>
 
 				<section>
@@ -333,20 +419,107 @@
 
 					<section>
 						<h3>Developper une application WASI avec Rust</h3>
-						<a href="https://gitpod.io/workspaces" target="_blank">Demo</a>
+						<a href="https://github.com/sdeleuze/wasm-playground/tree/main/rust/wasi-markdown-renderer" target="_blank">Demo</a>
 					</section>
-				
+
+					<section style="font-size: 0.8em;">
+						<h3>WASI est encore jeune</h3>
+						<table>
+							<thead>
+								<tr>
+									<th>Proposition</th>
+									<th>Champion</th>
+									<th>Phase (0-5)</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><a href="https://github.com/WebAssembly/wasi-io">I/O</a></td>
+									<td>Dan Gohman</td>
+									<td>2</td>
+								</tr>
+								<tr>
+									<td><a href="https://github.com/WebAssembly/wasi-filesystem">Filesystem</a></td>
+									<td>Dan Gohman</td>
+									<td>2</td>
+								</tr>
+								<tr>
+									<td><a href="https://github.com/WebAssembly/wasi-nn">Machine learning</a></td>
+									<td>Andrew Brown, Mingqiu Sun</td>
+									<td>2</td>
+								</tr>
+								<tr>
+									<td><a href="https://github.com/WebAssembly/wasi-http">HTTP</a></td>
+									<td>Piotr Sikora</td>
+									<td>1</td>
+								</tr>
+								<tr>
+									<td><a href="https://github.com/WebAssembly/wasi-native-threads">Native threads</a></td>
+									<td>Alexandru Ene</td>
+									<td>1</td>
+								</tr>
+								<tr>
+									<td><a href="https://github.com/WebAssembly/wasi-parallel">Parallel</a></td>
+									<td>Andrew Brown</td>
+									<td>1</td>
+								</tr>
+								<tr>
+									<td><a href="https://github.com/WebAssembly/wasi-sockets">Sockets</a></td>
+									<td>Dave Bakker</td>
+									<td>1</td>
+								</tr>								
+							</tbody>
+						</table>
+					</section>
+
+					<section>
+						<h3>Un serveur HTTP pur WASI!</h3>
+						<a href="https://github.com/sdeleuze/mini_http" target="_blank">Demo</a>
+					</section>
+
 				</section>
 
 				<section>
 
 					<section>
-						<h2>DevXP</h2>
+						<h2>Cas d'utilisation</h2>
 					</section>
 
 					<section>
-						<h3>Comment WebAssembly et WASI peuvent changer la DexXP</h3>
+						<h3>Porter du code natif sur le Web</h3>
+						<img src="assets/Emscripten.png" />
+						<a href="https://web.autocad.com/" target="_blank">Demo</a>
+					</section>
+
+					<section>
+						<h3>Système d'exploitation</h3>
+					</section>
+
+					<section data-background-iframe="https://dustinbrett.com/" data-background-interactive></section>					
+
+					<section>
+						<h3>Edge computing</h3>
+						<p>Le code s'exécute au plus proche de l'utilisateur : latence, vie privée.</p>
+					</section>
+
+					<section>
+						<h3>Changer l'experience de développement</h3>
 						<a href="https://stackblitz.com/" target="_blank">StackBlitz</a>
+					</section>
+
+					<section>
+						<h3>Programation multi-langages</h3>
+						<img src="/assets/multi-languages.png" />
+						<p><small>Attribution : <a href="https://bytecodealliance.org/articles/announcing-the-bytecode-alliance">Lin Clark</a></small></p>
+					</section>
+
+					<section>
+						<h3>Réduire les silos technologiques</h3>
+						<p>Même langage pour client et serveur par exemple.</p>
+					</section>
+
+					<section>
+						<h3>Déploiement sans container</h3>
 					</section>
 
 				</section>
